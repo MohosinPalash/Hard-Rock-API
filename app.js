@@ -1,18 +1,23 @@
-const searchSong = () =>{
+const searchSong = async () => {
     const song = document.getElementById("input-field").value;
     const url = `https://api.lyrics.ovh/suggest/${song}`;
-    fetch(url)
-    .then(response => response.json())
-    .then(data => showSongsList(data.data));
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+        showSongsList(data.data);
+    } catch (error) {
+        console.log(error);
+    }
+
 }
-const showSongsList = songs =>{
+const showSongsList = songs => {
     const songList = document.getElementById('songs-list');
     songList.innerHTML = "";
     songs.forEach(song => {
         const songDiv = document.createElement('div');
-        songDiv.className ="single-result row align-items-center my-3 p-3";
+        songDiv.className = "single-result row align-items-center my-3 p-3";
 
-        songDiv.innerHTML =`
+        songDiv.innerHTML = `
         <div class="col-md-9">
             <h3 class="lyrics-name">${song.title}</h3>
             <p class="author lead">Album by <span>${song.artist.name}</span></p>
@@ -28,11 +33,11 @@ const showSongsList = songs =>{
     })
 }
 
-const showLyrics = (title, artist) =>{
+const showLyrics = (title, artist) => {
     fetch(`https://api.lyrics.ovh/v1/${artist}/${title}`)
-    .then(response => response.json())
-    .then(data => {
-        document.getElementById("song-lyrics").innerText = data.lyrics;
-    });
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("song-lyrics").innerText = data.lyrics;
+        });
 
 }
